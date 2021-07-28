@@ -1,0 +1,23 @@
+{
+  "name": "JSWCF",
+  "version": "1.0.0",
+  "description": "",
+  "main": "component.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aryan02420/JSWCF.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aryan02420/JSWCF/issues"
+  },
+  "homepage": "https://github.com/aryan02420/JSWCF#readme",
+  "devDependencies": {
+    "typescript": "^4.3.5"
+  }
+}
