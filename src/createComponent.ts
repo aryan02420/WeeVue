@@ -28,13 +28,16 @@ function createComponent({
     }
 
     connectedCallback() {
+      if ('init' in this.methods) {
+        this.methods.init.bind(this.$el)()
+      }
       this.render()
     }
     attributeChangedCallback() {
       this.render()
     }
 
-    $el:any = new Proxy(this, {
+    $el: any = new Proxy(this, {
       get: function (target, prop: string, receiver) {
         if (target.hasAttribute(prop)) return target.getAttribute(prop)
         if (prop in target.data) {
@@ -60,7 +63,10 @@ function createComponent({
       let shadow = this.shadowRoot
       if (shadow) {
         shadow.innerHTML = `<style>${styles}</style>`
-        shadow.innerHTML += template(this.$el).replace(/\$el/g, 'this.getRootNode().host.$el')
+        shadow.innerHTML += template(this.$el).replace(
+          /\$el/g,
+          'this.getRootNode().host.$el'
+        )
       }
     }
   }

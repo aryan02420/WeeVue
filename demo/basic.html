@@ -10,9 +10,12 @@
     <custom-element
       text="<b>hello world</b>"
       class="customClass"
+      startat="32"
     ></custom-element>
+
     <script type="module">
       import createComponent from '../lib/createComponent.js'
+
       createComponent({
         elementName: 'custom-element',
         props: ['text', 'class'],
@@ -32,8 +35,12 @@
             this.count++
           },
           add(value) {
-            this.count+=value
-          }
+            this.count += value
+          },
+          init() {
+            this.count = this.startat
+            this.increase()
+          },
         },
       })
     </script>
