@@ -4,7 +4,8 @@
   "description": "",
   "main": "component.js",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "dev": "tsc --watch"
   },
   "repository": {
     "type": "git",
