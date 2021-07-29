@@ -2,7 +2,7 @@ declare function createComponent({ elementName, props, data, template, styles, m
     elementName: string;
     props?: string[];
     data?: any;
-    template: string;
+    template: Function;
     styles?: string;
     methods?: any;
 }): void;

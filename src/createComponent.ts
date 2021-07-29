@@ -1,22 +1,3 @@
-function toHTML(that: any, template: string, styles: string = '') {
-  template = template.replace(/(\{\{\S+?\}\})/g, ($1) => {
-    $1 = $1.slice(2, -2)
-    let value = that.hasAttribute($1) ? that.getAttribute($1) : $1
-    return value
-  })
-  styles = styles.replace(/(\{\{\S+?\}\})/g, ($1) => {
-    $1 = $1.slice(2, -2)
-    let value = that.hasAttribute($1) ? that.getAttribute($1) : $1
-    return value
-  })
-  return `
-  <style>
-    ${styles}
-  </style>
-  ${template}
-  `
-}
-
 function createComponent({
   elementName,
   props,
@@ -28,7 +9,7 @@ function createComponent({
   elementName: string
   props?: string[]
   data?: any
-  template: string
+  template: Function
   styles?: string
   methods?: any
 }) {
@@ -49,10 +30,30 @@ function createComponent({
       this.render()
     }
 
+    $el = new Proxy(this, {
+      get: function (target, prop: string, receiver) {
+        if (target.hasAttribute(prop)) return target.getAttribute(prop)
+        if (prop in data) {
+          return data[prop]
+        }
+        if (prop in methods) {
+          return methods[prop].bind(this)
+        }
+      },
+      set: function (target, prop, value, receiver) {
+        if (prop in data) {
+          data[prop] = value
+          return true
+        }
+        return false
+      },
+    })
+
     render() {
       let shadow = this.shadowRoot
       if (shadow) {
-        shadow.innerHTML = toHTML(this, template, styles)
+        shadow.innerHTML = `<style>${styles}</style>`
+        shadow.innerHTML += template(this.$el)
       }
     }
   }

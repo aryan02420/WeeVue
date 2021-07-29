@@ -8,16 +8,27 @@
   </head>
   <body>
     <custom-element
-      data-text="<b>hello world</b>"
-      data-class="customClass"
+      text="<b>hello world</b>"
+      class="customClass"
     ></custom-element>
     <script type="module">
       import createComponent from '../lib/createComponent.js'
       createComponent({
         elementName: 'custom-element',
-        props: ['data-text', 'data-class'],
-        template: '<p class="{{data-class}}">{{data-text}}</p>',
+        props: ['text', 'class'],
+        data: {
+          count: 0,
+        },
+        template: ($el) => `
+          <button onclick="console.log(this)">+1</button>
+          <p class="${$el.class}">clicked ${$el.count} times!</p>
+        `,
         styles: 'p{color:red}',
+        methods: {
+          increase($el) {
+            $el.count++
+          },
+        },
       })
     </script>
   </body>
