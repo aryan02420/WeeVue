@@ -2,7 +2,7 @@
   "name": "JSWCF",
   "version": "1.0.0",
   "description": "",
-  "main": "component.js",
+  "main": "lib/createComponent.js",
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch"
