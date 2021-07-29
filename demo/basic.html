@@ -20,14 +20,20 @@
           count: 0,
         },
         template: ($el) => `
-          <button onclick="console.log(this)">+1</button>
           <p class="${$el.class}">clicked ${$el.count} times!</p>
+          <button onclick="$el.increase()">+1</button>
+          <button onclick="$el.add(10)">+10</button>
+          <button onclick="$el.add($el.count)">*2</button>
+          <p>${$el.text}</p>
         `,
         styles: 'p{color:red}',
         methods: {
-          increase($el) {
-            $el.count++
+          increase() {
+            this.count++
           },
+          add(value) {
+            this.count+=value
+          }
         },
       })
     </script>

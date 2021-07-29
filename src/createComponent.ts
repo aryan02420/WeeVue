@@ -14,12 +14,16 @@ function createComponent({
   methods?: any
 }) {
   let customElementClass = class extends HTMLElement {
+    data: any
+    methods: any
     static get observedAttributes() {
       return props
     }
 
     constructor() {
       super()
+      this.data = data
+      this.methods = methods
       const shadow = this.attachShadow({ mode: 'open' })
     }
 
@@ -30,19 +34,21 @@ function createComponent({
       this.render()
     }
 
-    $el = new Proxy(this, {
+    $el:any = new Proxy(this, {
       get: function (target, prop: string, receiver) {
         if (target.hasAttribute(prop)) return target.getAttribute(prop)
-        if (prop in data) {
-          return data[prop]
+        if (prop in target.data) {
+          return target.data[prop]
         }
-        if (prop in methods) {
-          return methods[prop].bind(this)
+        if (prop in target.methods) {
+          return target.methods[prop].bind(target.$el)
         }
+        return Reflect.get(this, prop, receiver)
       },
       set: function (target, prop, value, receiver) {
-        if (prop in data) {
-          data[prop] = value
+        if (prop in target.data) {
+          target.data[prop] = value
+          target.render()
           return true
         }
         return false
@@ -50,10 +56,11 @@ function createComponent({
     })
 
     render() {
+      console.log('render')
       let shadow = this.shadowRoot
       if (shadow) {
         shadow.innerHTML = `<style>${styles}</style>`
-        shadow.innerHTML += template(this.$el)
+        shadow.innerHTML += template(this.$el).replace(/\$el/g, 'this.getRootNode().host.$el')
       }
     }
   }
