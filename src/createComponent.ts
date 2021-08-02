@@ -14,22 +14,23 @@ function createComponent({
   methods?: any
 }) {
   let customElementClass = class extends HTMLElement {
-    data: any
-    methods: any
+    $data: any
+    $methods: any
     static get observedAttributes() {
       return props
     }
 
     constructor() {
       super()
-      this.data = data
-      this.methods = methods
+      this.$data = data
+      this.$methods = methods
       const shadow = this.attachShadow({ mode: 'open' })
     }
 
     connectedCallback() {
-      if ('init' in this.methods) {
-        this.methods.init.bind(this.$el)()
+      console.log('connected', this)
+      if ('init' in this.$methods) {
+        this.$methods.init.bind(this.$el)()
       }
       this.render()
     }
@@ -40,17 +41,17 @@ function createComponent({
     $el: any = new Proxy(this, {
       get: function (target, prop: string, receiver) {
         if (target.hasAttribute(prop)) return target.getAttribute(prop)
-        if (prop in target.data) {
-          return target.data[prop]
+        if (prop in target.$data) {
+          return target.$data[prop]
         }
-        if (prop in target.methods) {
-          return target.methods[prop].bind(target.$el)
+        if (prop in target.$methods) {
+          return target.$methods[prop].bind(target.$el)
         }
         return Reflect.get(this, prop, receiver)
       },
       set: function (target, prop, value, receiver) {
-        if (prop in target.data) {
-          target.data[prop] = value
+        if (prop in target.$data) {
+          target.$data[prop] = value
           target.render()
           return true
         }
