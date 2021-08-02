@@ -22,13 +22,12 @@ function createComponent({
 
     constructor() {
       super()
-      this.$data = data
+      this.$data = {...data}
       this.$methods = methods
       const shadow = this.attachShadow({ mode: 'open' })
     }
 
     connectedCallback() {
-      console.log('connected', this)
       if ('init' in this.$methods) {
         this.$methods.init.bind(this.$el)()
       }
@@ -65,7 +64,6 @@ function createComponent({
     })
 
     render() {
-      console.log('render')
       let shadow = this.shadowRoot
       if (shadow) {
         shadow.innerHTML = `<style>${styles}</style>`
