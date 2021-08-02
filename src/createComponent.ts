@@ -1,83 +1,80 @@
-function createComponent({
-  elementName,
-  props,
-  data,
-  template,
-  styles,
-  methods,
-}: {
-  elementName: string
-  props?: string[]
-  data?: any
-  template: Function
-  styles?: string
-  methods?: any
-}) {
-  let customElementClass = class extends HTMLElement {
-    $data: any
-    $methods: any
-    static get observedAttributes() {
-      return props
-    }
+;((global) => {
+  let JSWCF: any = {}
 
-    constructor() {
-      super()
-      this.$data = data
-      this.$methods = methods
-      const shadow = this.attachShadow({ mode: 'open' })
-    }
+  JSWCF.states = new Map()
 
-    connectedCallback() {
-      console.log('connected', this)
-      if ('init' in this.$methods) {
-        this.$methods.init.bind(this.$el)()
+  JSWCF.createComponent = function ({
+    elementName,
+    props,
+    data,
+    template,
+    styles,
+    methods,
+  }: ICreateComponentProps) {
+    let customElementClass = class extends HTMLElement {
+      $methods: any
+      static get observedAttributes() {
+        return props
       }
-      this.render()
-    }
-    attributeChangedCallback() {
-      this.render()
-    }
-    disconnectedCallback() {
-      if ('term' in this.$methods) {
-        this.$methods.term.bind(this.$el)()
+
+      constructor() {
+        super()
+        this.$methods = methods
+        const shadow = this.attachShadow({ mode: 'open' })
       }
-    }
 
-    $el: any = new Proxy(this, {
-      get: function (target, prop: string, receiver) {
-        if (target.hasAttribute(prop)) return target.getAttribute(prop)
-        if (prop in target.$data) {
-          return target.$data[prop]
+      connectedCallback() {
+        JSWCF.states.set(this, {...data})
+        if ('init' in this.$methods) {
+          this.$methods.init.bind(this.$el)()
         }
-        if (prop in target.$methods) {
-          return target.$methods[prop].bind(target.$el)
+        this.render()
+      }
+      attributeChangedCallback() {
+        this.render()
+      }
+      disconnectedCallback() {
+        JSWCF.states.delete(this)
+        if ('term' in this.$methods) {
+          this.$methods.term.bind(this.$el)()
         }
-        return Reflect.get(this, prop, receiver)
-      },
-      set: function (target, prop, value, receiver) {
-        if (prop in target.$data) {
-          target.$data[prop] = value
-          target.render()
-          return true
-        }
-        return false
-      },
-    })
+      }
 
-    render() {
-      console.log('render')
-      let shadow = this.shadowRoot
-      if (shadow) {
-        shadow.innerHTML = `<style>${styles}</style>`
-        shadow.innerHTML += template(this.$el).replace(
-          /\$el/g,
-          'this.getRootNode().host.$el'
-        )
+      $el: any = new Proxy(this, {
+        get: function (target, prop: string, receiver) {
+          if (target.hasAttribute(prop)) return target.getAttribute(prop)
+          if (prop in JSWCF.states.get(target)) {
+            return JSWCF.states.get(target)[prop]
+          }
+          if (prop in target.$methods) {
+            return target.$methods[prop].bind(target.$el)
+          }
+          return Reflect.get(this, prop, receiver)
+        },
+        set: function (target, prop, value, receiver) {
+          if (prop in JSWCF.states.get(target)) {
+            JSWCF.states.get(target)[prop] = value
+            target.render()
+            return true
+          }
+          return false
+        },
+      })
+
+      render() {
+        let shadow = this.shadowRoot
+        if (shadow) {
+          shadow.innerHTML = `<style>${styles}</style>`
+          shadow.innerHTML += template(this.$el).replace(
+            /\$el/g,
+            'this.getRootNode().host.$el'
+          )
+        }
       }
     }
+
+    customElements.define(elementName, customElementClass)
   }
 
-  customElements.define(elementName, customElementClass)
-}
-
-export default createComponent
+  global.JSWCF = JSWCF
+})(window)

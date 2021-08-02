@@ -8,11 +8,13 @@
   </head>
   <body>
     <my-counter></my-counter>
+    <my-counter></my-counter>
+    <my-counter></my-counter>
 
-    <script type="module">
-      import createComponent from '../lib/createComponent.js'
+    <script src="../lib/createComponent.js"></script>
+    <script>
 
-      createComponent({
+      JSWCF.createComponent({
         elementName: 'my-counter',
         props: [],
         data: {
