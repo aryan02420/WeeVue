@@ -37,6 +37,11 @@ function createComponent({
     attributeChangedCallback() {
       this.render()
     }
+    disconnectedCallback() {
+      if ('term' in this.$methods) {
+        this.$methods.term.bind(this.$el)()
+      }
+    }
 
     $el: any = new Proxy(this, {
       get: function (target, prop: string, receiver) {
