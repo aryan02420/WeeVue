@@ -1,17 +1,18 @@
 # My custom JS library for creating WebComponents
 
-### Usage
+### Install
+```html
+<script src="https://cdn.jsdelivr.net/gh/aryan02420/JSWCF/lib/createComponent.js"></script>
+```
 
+### Usage
 ```html
 
 <!-- https://aryan02420.github.io/JSWCF/demo/counter.html -->
 
 <my-counter></my-counter>
 
-<script type="module">
-
-    import createComponent from '../lib/createComponent.js'
-
+<script>
     createComponent({
         name: 'my-counter',
         props: {},
@@ -31,7 +32,6 @@
         `,
         styles: '',
     })
-
 </script>
 ```
 
