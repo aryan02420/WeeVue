@@ -1,35 +1,33 @@
 function createComponent({
-  elementName,
+  name,
   props,
   data,
   template,
   styles,
   methods,
 }: {
-  elementName: string
-  props?: string[]
-  data?: any
+  name: string
+  props?: any
+  data?: Function
   template: Function
   styles?: string
   methods?: any
 }) {
   let customElementClass = class extends HTMLElement {
     $data: any
-    $methods: any
     static get observedAttributes() {
-      return props
+      return Object.keys(props)
     }
 
     constructor() {
       super()
-      this.$data = {...data}
-      this.$methods = methods
+      this.$data = data?.bind(this.$el)()
       const shadow = this.attachShadow({ mode: 'open' })
     }
 
     connectedCallback() {
-      if ('init' in this.$methods) {
-        this.$methods.init.bind(this.$el)()
+      if ('init' in methods) {
+        methods.init.bind(this.$el)()
       }
       this.render()
     }
@@ -37,21 +35,25 @@ function createComponent({
       this.render()
     }
     disconnectedCallback() {
-      if ('term' in this.$methods) {
-        this.$methods.term.bind(this.$el)()
+      if ('term' in methods) {
+        methods.term.bind(this.$el)()
       }
     }
 
     $el: any = new Proxy(this, {
       get: function (target, prop: string, receiver) {
+        console.log('get', target.$data)
         if (target.hasAttribute(prop)) return target.getAttribute(prop)
+        if (prop in props) {
+          return props[prop]
+        }
         if (prop in target.$data) {
           return target.$data[prop]
         }
-        if (prop in target.$methods) {
-          return target.$methods[prop].bind(target.$el)
+        if (prop in methods) {
+          return methods[prop].bind(target.$el)
         }
-        return Reflect.get(this, prop, receiver)
+        return Reflect.get(target, prop, receiver)
       },
       set: function (target, prop, value, receiver) {
         if (prop in target.$data) {
@@ -75,7 +77,7 @@ function createComponent({
     }
   }
 
-  customElements.define(elementName, customElementClass)
+  customElements.define(name, customElementClass)
 }
 
 export default createComponent

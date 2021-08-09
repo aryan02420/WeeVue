@@ -1,7 +1,7 @@
-declare function createComponent({ elementName, props, data, template, styles, methods, }: {
-    elementName: string;
-    props?: string[];
-    data?: any;
+declare function createComponent({ name, props, data, template, styles, methods, }: {
+    name: string;
+    props?: any;
+    data?: Function;
     template: Function;
     styles?: string;
     methods?: any;

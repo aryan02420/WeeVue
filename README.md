@@ -13,10 +13,12 @@
     import createComponent from '../lib/createComponent.js'
 
     createComponent({
-        elementName: 'my-counter',
-        props: [],
-        data: {
-            count: 0,
+        name: 'my-counter',
+        props: {},
+        data() {
+            return {
+                count: 0,
+            }
         },
         methods: {
             increase() {

@@ -17,10 +17,10 @@
       import createComponent from '../lib/createComponent.js'
 
       createComponent({
-        elementName: 'custom-element',
-        props: ['text', 'class'],
-        data: {
-          count: 0,
+        name: 'custom-element',
+        props: { text: '', class: '' },
+        data() {
+          return { count: 0 }
         },
         template: ($el) => `
           <p class="${$el.class}">clicked ${$el.count} times!</p>

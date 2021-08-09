@@ -7,18 +7,22 @@
     <title>Document</title>
   </head>
   <body>
-    <my-counter></my-counter>
-    <my-counter></my-counter>
+    <my-counter startvalue="20"></my-counter>
+    <my-counter startvalue="30"></my-counter>
     <my-counter></my-counter>
 
     <script type="module">
       import createComponent from '../lib/createComponent.js'
 
       createComponent({
-        elementName: 'my-counter',
-        props: [],
-        data: {
-          count: 0,
+        name: 'my-counter',
+        props: {
+          startvalue: 0,
+        },
+        data() {
+          return {
+            count: +this.startvalue,
+          }
         },
         methods: {
           increase() {
