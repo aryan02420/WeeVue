@@ -1,14 +1,16 @@
-# My custom JS library for creating WebComponents
+# <p align="center"><img src="assets/WeeVue-logo.png" alt="WeeVue" height="120px"/></p>
 
-### Install
+> A tiny, Vue inspired, native web component utility
+
+## Install
 ```html
-<script src="https://cdn.jsdelivr.net/gh/aryan02420/JSWCF/lib/createComponent.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/aryan02420/WeeVue/lib/createComponent.js"></script>
 ```
 
-### Usage
+## Usage
 ```html
 
-<!-- https://aryan02420.github.io/JSWCF/demo/counter.html -->
+<!-- https://aryan02420.github.io/WeeVue/demo/counter.html -->
 
 <my-counter></my-counter>
 
